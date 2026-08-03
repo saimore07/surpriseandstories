@@ -67,13 +67,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Set connection mode status
     if (statSystemMode) {
-      if (isPlaceholderConfig) {
-        statSystemMode.innerHTML = '<span style="color: #F59E0B;"><i class="fa-solid fa-flask"></i> Demo Mode</span>';
-        if (userStatusText) userStatusText.textContent = 'Demo Administrator';
-      } else {
-        statSystemMode.innerHTML = '<span style="color: #10B981;"><i class="fa-solid fa-circle-check"></i> Supabase Live</span>';
-        if (userStatusText) userStatusText.textContent = 'Supabase Administrator';
-      }
+      statSystemMode.innerHTML = '<span style="color: #10B981;"><i class="fa-solid fa-circle-check"></i> Supabase Live</span>';
+      if (userStatusText) userStatusText.textContent = 'Supabase Administrator';
     }
 
     if (statWhatsappPhone) {
@@ -107,18 +102,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         showToast('Logged in successfully!', 'success');
         showDashboard(user);
       }
-    });
-  }
-
-  // Demo Mode Instant Login Button
-  const demoLoginBtn = document.getElementById('demo-login-btn');
-  if (demoLoginBtn) {
-    demoLoginBtn.addEventListener('click', async () => {
-      const email = document.getElementById('login-email').value || 'admin@surpriseandstories.com';
-      const password = document.getElementById('login-password').value || 'admin123';
-      const { user } = await AuthService.login(email, password, true);
-      showToast('Signed in via Demo Mode!', 'success');
-      showDashboard(user);
     });
   }
 
@@ -381,47 +364,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // 6. Settings Form Initialization & Handler
   function initSettingsFormValues() {
-    if (configSupabaseUrl) configSupabaseUrl.value = localStorage.getItem('SS_SUPABASE_URL') || '';
-    if (configSupabaseKey) configSupabaseKey.value = localStorage.getItem('SS_SUPABASE_ANON_KEY') || '';
+    if (configSupabaseUrl) configSupabaseUrl.value = SUPABASE_URL;
+    if (configSupabaseKey) configSupabaseKey.value = SUPABASE_ANON_KEY;
     if (configWhatsappPhone) configWhatsappPhone.value = WHATSAPP_PHONE;
   }
 
   if (settingsForm) {
     settingsForm.addEventListener('submit', (e) => {
       e.preventDefault();
-
-      const rawUrl = configSupabaseUrl.value.trim();
-      const url = sanitizeSupabaseUrl(rawUrl);
-      const key = configSupabaseKey.value.trim();
-      const phone = configWhatsappPhone.value.trim().replace(/[^0-9]/g, '');
-
-      if (url) localStorage.setItem('SS_SUPABASE_URL', url);
-      else localStorage.removeItem('SS_SUPABASE_URL');
-
-      if (key) localStorage.setItem('SS_SUPABASE_ANON_KEY', key);
-      else localStorage.removeItem('SS_SUPABASE_ANON_KEY');
-
-      if (phone) localStorage.setItem('SS_WHATSAPP_PHONE', phone);
-
-      showToast('Settings saved successfully! Reloading configuration...', 'success');
-
-      setTimeout(() => {
-        window.location.reload();
-      }, 1200);
-    });
-  }
-
-  if (resetSettingsBtn) {
-    resetSettingsBtn.addEventListener('click', () => {
-      if (confirm('Reset all Supabase & WhatsApp settings back to defaults?')) {
-        localStorage.removeItem('SS_SUPABASE_URL');
-        localStorage.removeItem('SS_SUPABASE_ANON_KEY');
-        localStorage.removeItem('SS_WHATSAPP_PHONE');
-        showToast('Settings reset to default.', 'info');
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000);
-      }
+      showToast('Production Supabase configuration updated.', 'success');
     });
   }
 
@@ -433,9 +384,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   const aboutPreview2 = document.getElementById('about-preview-2');
   const saveAboutImgsBtn = document.getElementById('save-about-imgs-btn');
 
-  function initAboutImagesAdmin() {
+  async function initAboutImagesAdmin() {
     if (aboutPreview1 || aboutPreview2) {
-      const { img1, img2 } = DBService.getAboutImages();
+      const { img1, img2 } = await DBService.getAboutImages();
       if (aboutPreview1 && img1) aboutPreview1.src = img1;
       if (aboutPreview2 && img2) aboutPreview2.src = img2;
     }

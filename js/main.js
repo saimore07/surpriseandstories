@@ -177,7 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Helper to get sanitized active WhatsApp Phone Number
   function getWhatsAppPhone() {
-    const rawPhone = localStorage.getItem('SS_WHATSAPP_PHONE') || (typeof WHATSAPP_PHONE !== 'undefined' ? WHATSAPP_PHONE : '919876543210');
+    const rawPhone = typeof WHATSAPP_PHONE !== 'undefined' ? WHATSAPP_PHONE : '9156578252';
     return rawPhone.replace(/[^0-9]/g, '');
   }
 
@@ -198,11 +198,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Load About Us Images dynamically
-  function loadAboutImages() {
+  async function loadAboutImages() {
     const img1Elem = document.getElementById('about-img-1');
     const img2Elem = document.getElementById('about-img-2');
     if (img1Elem || img2Elem) {
-      const { img1, img2 } = DBService.getAboutImages();
+      const { img1, img2 } = await DBService.getAboutImages();
       if (img1Elem && img1) img1Elem.src = img1;
       if (img2Elem && img2) img2Elem.src = img2;
     }

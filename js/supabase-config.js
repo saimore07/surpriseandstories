@@ -1,5 +1,5 @@
 /* ----------------------------------------------------
-   Surprise and Stories - Supabase Client & Config
+   Surprise and Stories - Production Supabase Config & Services
    ---------------------------------------------------- */
 
 // Helper to sanitize Supabase Project URL (e.g. converting dashboard URLs to API URLs)
@@ -13,204 +13,74 @@ function sanitizeSupabaseUrl(rawUrl) {
   return url.replace(/\/+$/, '');
 }
 
-// Configurable constants - Can be updated in local settings or manually here
-const RAW_SUPABASE_URL = localStorage.getItem('SS_SUPABASE_URL') || 'https://supabase.com/dashboard/project/pflduczzlxpuxianmevd.supabase.co';
-const SUPABASE_URL = sanitizeSupabaseUrl(RAW_SUPABASE_URL);
-const SUPABASE_ANON_KEY = (localStorage.getItem('SS_SUPABASE_ANON_KEY') || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBmbGR1Y3p6bHhwdXhpYW5tZXZkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3NzI1ODUsImV4cCI6MjEwMTM0ODU4NX0.rH8TNnzG11kc9uxpl59VCyTeaPDxHH10DpK-bTW_JHo').trim();
-const WHATSAPP_PHONE = localStorage.getItem('SS_WHATSAPP_PHONE') || '9156578252';
+// Production Supabase Configuration
+const SUPABASE_URL = sanitizeSupabaseUrl('https://pflduczzlxpuxianmevd.supabase.co');
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBmbGR1Y3p6bHhwdXhpYW5tZXZkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3NzI1ODUsImV4cCI6MjEwMTM0ODU4NX0.rH8TNnzG11kc9uxpl59VCyTeaPDxHH10DpK-bTW_JHo';
+const WHATSAPP_PHONE = '9156578252';
 
-// Check if using default placeholder configuration
-const isPlaceholderConfig = (
-  !SUPABASE_URL ||
-  SUPABASE_URL.includes('YOUR_SUPABASE') ||
-  !SUPABASE_ANON_KEY ||
-  SUPABASE_ANON_KEY.includes('YOUR_SUPABASE')
-);
-
-// Initialize Supabase Client if library is available
+// Initialize Supabase Client
 let supabaseClient = null;
-if (typeof supabase !== 'undefined' && !isPlaceholderConfig) {
+if (typeof supabase !== 'undefined') {
   try {
     supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    console.log('✅ Supabase Client initialized successfully for:', SUPABASE_URL);
+    console.log('✅ Production Supabase Client connected:', SUPABASE_URL);
   } catch (err) {
-    console.warn('⚠️ Supabase init error, falling back to local demo mode:', err);
+    console.error('❌ Supabase init error:', err);
   }
 } else {
-  console.info('ℹ️ Demo / Fallback Mode enabled (Default Supabase credentials detected).');
+  console.error('❌ Supabase JS SDK not loaded');
 }
 
-// Initial Sample Products for Demo / Fallback Mode
-const INITIAL_DEMO_PRODUCTS = [
-  {
-    id: 'demo-1',
-    title: 'Personalized Memory Box',
-    price: 1899,
-    category: 'Anniversary',
-    description: 'A handcrafted wooden box featuring fairy lights, custom photo clips, and mini scroll messages.',
-    image_url: 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&q=80&w=800',
-    created_at: new Date(Date.now() - 100000).toISOString()
-  },
-  {
-    id: 'demo-2',
-    title: 'Bespoke Velvet Gift Hamper',
-    price: 2499,
-    category: 'Gift Hampers',
-    description: 'Luxurious rose pink hamper stuffed with artisan chocolates, scented candle, and custom wax-sealed card.',
-    image_url: 'https://images.unsplash.com/photo-1513885535751-8b9238bd48?auto=format&fit=crop&q=80&w=800',
-    created_at: new Date(Date.now() - 200000).toISOString()
-  },
-  {
-    id: 'demo-3',
-    title: 'Vintage Floral Calligraphy Card',
-    price: 499,
-    category: 'Cards',
-    description: 'Hand-painted watercolor floral card crafted on 300gsm deckle-edge paper with gold foil accents.',
-    image_url: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&q=80&w=800',
-    created_at: new Date(Date.now() - 300000).toISOString()
-  },
-  {
-    id: 'demo-4',
-    title: 'Love Story Pull-Out Accordion',
-    price: 1299,
-    category: 'Personalized Cards',
-    description: 'Interactive photo accordion album capturing 12 milestone memories with handcrafted ribbon closure.',
-    image_url: 'https://images.unsplash.com/photo-1513201099705-a9746e1e201f?auto=format&fit=crop&q=80&w=800',
-    created_at: new Date(Date.now() - 400000).toISOString()
-  },
-  {
-    id: 'demo-5',
-    title: 'Blossom Glow Candle & Frame',
-    price: 1599,
-    category: 'Gift Hampers',
-    description: 'Soy wax botanical candle paired with a custom pressed-flower glass photo frame.',
-    image_url: 'https://images.unsplash.com/photo-1607344645866-009c320c5ab8?auto=format&fit=crop&q=80&w=800',
-    created_at: new Date(Date.now() - 500000).toISOString()
-  },
-  {
-    id: 'demo-6',
-    title: 'Custom Exploding Surprise Box',
-    price: 2199,
-    category: 'Anniversary',
-    description: 'Multi-layered explosion box filled with 24 photo flaps, sweet notes, and a centerpiece gift compartment.',
-    image_url: 'https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&q=80&w=800',
-    created_at: new Date(Date.now() - 600000).toISOString()
-  }
-];
-
-// LocalStorage Helper for Demo & Local Synchronization
-function getLocalProducts() {
-  const stored = localStorage.getItem('SS_DEMO_PRODUCTS');
-  if (!stored) {
-    localStorage.setItem('SS_DEMO_PRODUCTS', JSON.stringify(INITIAL_DEMO_PRODUCTS));
-    return [...INITIAL_DEMO_PRODUCTS];
-  }
-  try {
-    return JSON.parse(stored);
-  } catch (e) {
-    return [...INITIAL_DEMO_PRODUCTS];
-  }
-}
-
-function saveLocalProducts(products) {
-  localStorage.setItem('SS_DEMO_PRODUCTS', JSON.stringify(products));
-}
-
-// Global Service Wrapper Methods
+// Global Production Database & Storage Service Wrapper
 const DBService = {
-  // Fetch all products, merging live Supabase products and locally added products
+  // Fetch all products directly from Supabase `products` table
   async getProducts() {
-    let supabaseProducts = [];
+    if (!supabaseClient) return { data: [], error: { message: 'Supabase client not initialized' } };
 
-    if (supabaseClient && !isPlaceholderConfig) {
-      try {
-        const { data, error } = await supabaseClient
-          .from('products')
-          .select('*')
-          .order('created_at', { ascending: false });
+    try {
+      const { data, error } = await supabaseClient
+        .from('products')
+        .select('*')
+        .order('created_at', { ascending: false });
 
-        if (!error && data) {
-          supabaseProducts = data;
-        }
-      } catch (error) {
-        console.warn('Supabase DB fetch error, relying on local sync:', error.message);
-      }
+      if (error) throw error;
+      return { data: data || [], error: null };
+    } catch (error) {
+      console.error('Error fetching products from Supabase:', error.message);
+      return { data: [], error };
     }
-
-    const localProducts = getLocalProducts();
-
-    // Merge Supabase products and local products (avoiding duplicates by id or title)
-    const productMap = new Map();
-
-    // Add local products first
-    localProducts.forEach(p => {
-      if (p && p.title) productMap.set(p.id || p.title, p);
-    });
-
-    // Supabase products take precedence if they exist
-    supabaseProducts.forEach(p => {
-      if (p && p.title) productMap.set(p.id || p.title, p);
-    });
-
-    const merged = Array.from(productMap.values());
-    merged.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
-
-    return { data: merged, error: null };
   },
 
-  // Upload image file to Supabase Storage bucket `product-images` or return base64 Data URL
+  // Upload image file directly to Supabase Storage bucket `product-images`
   async uploadImage(file) {
     if (!file) return { url: null, error: 'No file provided' };
+    if (!supabaseClient) return { url: null, error: 'Supabase client not initialized' };
 
-    // Always generate a local Data URL first so image display is 100% guaranteed
-    const readAsDataURL = (fileObj) => {
-      return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = (e) => resolve(e.target.result);
-        reader.onerror = () => resolve('https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&q=80&w=800');
-        reader.readAsDataURL(fileObj);
-      });
-    };
-
-    const dataUrl = await readAsDataURL(file);
     const fileName = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
 
-    if (supabaseClient && !isPlaceholderConfig) {
-      try {
-        const { data, error } = await supabaseClient.storage
-          .from('product-images')
-          .upload(fileName, file, { cacheControl: '3600', upsert: true });
+    try {
+      const { data, error } = await supabaseClient.storage
+        .from('product-images')
+        .upload(fileName, file, { cacheControl: '3600', upsert: true });
 
-        if (!error && data) {
-          const { data: publicUrlData } = supabaseClient.storage
-            .from('product-images')
-            .getPublicUrl(fileName);
+      if (error) throw error;
 
-          if (publicUrlData && publicUrlData.publicUrl) {
-            // Verify if bucket is public by sending a quick check
-            try {
-              const res = await fetch(publicUrlData.publicUrl, { method: 'HEAD' });
-              if (res.ok) {
-                return { url: publicUrlData.publicUrl, error: null };
-              }
-            } catch (e) {
-              console.info('Supabase Storage URL not public or blocked, using Data URL fallback.');
-            }
-          }
-        }
-      } catch (error) {
-        console.warn('Supabase Storage upload failed, using Data URL:', error.message);
-      }
+      const { data: publicUrlData } = supabaseClient.storage
+        .from('product-images')
+        .getPublicUrl(fileName);
+
+      return { url: publicUrlData.publicUrl, error: null };
+    } catch (error) {
+      console.error('Error uploading product image to Supabase Storage:', error.message);
+      return { url: null, error: error.message };
     }
-
-    // Fallback to self-contained Data URL
-    return { url: dataUrl, error: null };
   },
 
-  // Add a new product row to both Supabase `products` table and local sync
+  // Add a new product row directly to Supabase `products` table
   async addProduct(productData) {
+    if (!supabaseClient) return { data: null, error: { message: 'Supabase client not initialized' } };
+
     const newProduct = {
-      id: `prod-${Date.now()}`,
       title: productData.title,
       price: parseFloat(productData.price),
       description: productData.description,
@@ -219,174 +89,155 @@ const DBService = {
       created_at: new Date().toISOString()
     };
 
-    // Save to local storage first for instant visibility
-    const localProducts = getLocalProducts();
-    localProducts.unshift(newProduct);
-    saveLocalProducts(localProducts);
+    try {
+      const { data, error } = await supabaseClient
+        .from('products')
+        .insert([newProduct])
+        .select();
 
-    // Also insert into Supabase if connected
-    if (supabaseClient && !isPlaceholderConfig) {
-      try {
-        const { data, error } = await supabaseClient
-          .from('products')
-          .insert([{
-            title: newProduct.title,
-            price: newProduct.price,
-            description: newProduct.description,
-            image_url: newProduct.image_url,
-            category: newProduct.category,
-            created_at: newProduct.created_at
-          }])
-          .select();
-
-        if (!error && data && data[0]) {
-          return { data: data[0], error: null };
-        }
-      } catch (error) {
-        console.warn('Supabase Insert warning:', error.message);
-      }
+      if (error) throw error;
+      return { data: data ? data[0] : newProduct, error: null };
+    } catch (error) {
+      console.error('Error inserting product into Supabase DB:', error.message);
+      return { data: null, error };
     }
-
-    return { data: newProduct, error: null };
   },
 
-  // Delete product row by ID from both local storage and Supabase
+  // Delete product row directly from Supabase `products` table
   async deleteProduct(id) {
-    // Delete from local storage
-    let localProducts = getLocalProducts();
-    localProducts = localProducts.filter(p => p.id !== id && p.title !== id);
-    saveLocalProducts(localProducts);
+    if (!supabaseClient) return { error: { message: 'Supabase client not initialized' } };
 
-    if (supabaseClient && !isPlaceholderConfig) {
-      try {
-        await supabaseClient
-          .from('products')
-          .delete()
-          .eq('id', id);
-      } catch (error) {
-        console.warn('Supabase Delete warning:', error.message);
-      }
+    try {
+      const { error } = await supabaseClient
+        .from('products')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+      return { error: null };
+    } catch (error) {
+      console.error('Error deleting product from Supabase DB:', error.message);
+      return { error };
     }
-
-    return { error: null };
   },
 
-  // Get About Us Images (2 image limit)
-  getAboutImages() {
-    const img1 = localStorage.getItem('SS_ABOUT_IMAGE_1') || 'https://images.unsplash.com/photo-1513885535751-8b9238bd48?auto=format&fit=crop&q=80&w=600';
-    const img2 = localStorage.getItem('SS_ABOUT_IMAGE_2') || 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&q=80&w=600';
+  // Get About Us Images directly from Supabase Storage bucket `aboutus-images`
+  async getAboutImages() {
+    let img1 = 'https://images.unsplash.com/photo-1513885535751-8b9238bd48?auto=format&fit=crop&q=80&w=600';
+    let img2 = 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&q=80&w=600';
+
+    if (!supabaseClient) return { img1, img2 };
+
+    try {
+      const { data: list, error } = await supabaseClient.storage
+        .from('aboutus-images')
+        .list('', { sortBy: { column: 'created_at', order: 'desc' } });
+
+      if (!error && list && list.length > 0) {
+        const file1 = list.find(f => f.name.startsWith('about_1'));
+        const file2 = list.find(f => f.name.startsWith('about_2'));
+
+        if (file1) {
+          img1 = supabaseClient.storage.from('aboutus-images').getPublicUrl(file1.name).data.publicUrl;
+        }
+        if (file2) {
+          img2 = supabaseClient.storage.from('aboutus-images').getPublicUrl(file2.name).data.publicUrl;
+        }
+      }
+    } catch (e) {
+      console.warn('Could not list aboutus-images from Supabase Storage:', e.message);
+    }
+
     return { img1, img2 };
   },
 
-  // Upload About Us Image to Supabase Storage bucket `aboutus-images`
+  // Upload About Us Image directly to Supabase Storage bucket `aboutus-images`
   async uploadAboutImage(file, index) {
     if (!file) return { url: null, error: 'No file provided' };
+    if (!supabaseClient) return { url: null, error: 'Supabase client not initialized' };
 
-    const readAsDataURL = (fileObj) => {
-      return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = (e) => resolve(e.target.result);
-        reader.onerror = () => resolve(index === 1 ? 'https://images.unsplash.com/photo-1513885535751-8b9238bd48?auto=format&fit=crop&q=80&w=600' : 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&q=80&w=600');
-        reader.readAsDataURL(fileObj);
-      });
-    };
-
-    const dataUrl = await readAsDataURL(file);
     const ext = file.name.split('.').pop() || 'jpg';
     const fileName = `about_${index}_${Date.now()}.${ext}`;
 
-    let finalUrl = dataUrl;
+    try {
+      const { data, error } = await supabaseClient.storage
+        .from('aboutus-images')
+        .upload(fileName, file, { cacheControl: '3600', upsert: true });
 
-    if (supabaseClient && !isPlaceholderConfig) {
-      try {
-        const { data, error } = await supabaseClient.storage
-          .from('aboutus-images')
-          .upload(fileName, file, { cacheControl: '3600', upsert: true });
+      if (error) throw error;
 
-        if (!error && data) {
-          const { data: publicUrlData } = supabaseClient.storage
-            .from('aboutus-images')
-            .getPublicUrl(fileName);
+      const { data: publicUrlData } = supabaseClient.storage
+        .from('aboutus-images')
+        .getPublicUrl(fileName);
 
-          if (publicUrlData && publicUrlData.publicUrl) {
-            try {
-              const res = await fetch(publicUrlData.publicUrl, { method: 'HEAD' });
-              if (res.ok) {
-                finalUrl = publicUrlData.publicUrl;
-              }
-            } catch (e) {
-              console.info('Supabase aboutus-images URL not public, using Data URL fallback.');
-            }
-          }
-        }
-      } catch (error) {
-        console.warn('Supabase aboutus-images upload warning:', error.message);
-      }
+      return { url: publicUrlData.publicUrl, error: null };
+    } catch (error) {
+      console.error('Error uploading about us image:', error.message);
+      return { url: null, error: error.message };
     }
-
-    localStorage.setItem(`SS_ABOUT_IMAGE_${index}`, finalUrl);
-    return { url: finalUrl, error: null };
   },
 
-  // Delete / Reset About Us Image back to default
+  // Delete About Us Image from Supabase Storage bucket `aboutus-images`
   async deleteAboutImage(index) {
-    localStorage.removeItem(`SS_ABOUT_IMAGE_${index}`);
+    if (!supabaseClient) return { error: null };
+
+    try {
+      const { data: list } = await supabaseClient.storage
+        .from('aboutus-images')
+        .list();
+
+      if (list && list.length > 0) {
+        const toDelete = list.filter(f => f.name.startsWith(`about_${index}`)).map(f => f.name);
+        if (toDelete.length > 0) {
+          await supabaseClient.storage.from('aboutus-images').remove(toDelete);
+        }
+      }
+    } catch (e) {
+      console.warn('Error deleting about image from Supabase Storage:', e.message);
+    }
+
     return { error: null };
   }
 };
 
-// Global Auth Wrapper Service
+// Production Auth Wrapper Service
 const AuthService = {
   async getSession() {
-    if (supabaseClient && !isPlaceholderConfig) {
-      try {
-        const { data, error } = await supabaseClient.auth.getSession();
-        if (error) throw error;
-        return data.session;
-      } catch (e) {
-        console.warn('Session fetch failed:', e);
-      }
+    if (!supabaseClient) return null;
+    try {
+      const { data, error } = await supabaseClient.auth.getSession();
+      if (error) throw error;
+      return data.session;
+    } catch (e) {
+      console.warn('Session check error:', e.message);
+      return null;
     }
-    // Fallback demo auth status
-    return localStorage.getItem('SS_DEMO_LOGGED_IN') === 'true' ? { user: { email: 'admin@surpriseandstories.com' } } : null;
   },
 
-  async login(email, password, forceDemo = false) {
-    if (!forceDemo && supabaseClient && !isPlaceholderConfig) {
-      try {
-        const { data, error } = await supabaseClient.auth.signInWithPassword({
-          email: email,
-          password: password
-        });
-        if (error) throw error;
-        return { user: data.user, error: null };
-      } catch (error) {
-        let msg = error.message;
-        if (msg.includes('Invalid login credentials')) {
-          msg = 'Invalid credentials on your live Supabase project. Make sure you created a User under Supabase Dashboard -> Authentication -> Users, or click "Use Offline Demo Mode" to log in instantly.';
-        }
-        return { user: null, error: msg, isSupabaseError: true };
-      }
-    }
+  async login(email, password) {
+    if (!supabaseClient) return { user: null, error: 'Supabase client not initialized' };
 
-    // Fallback Demo Login
-    if (email && password && password.length >= 3) {
-      localStorage.setItem('SS_DEMO_LOGGED_IN', 'true');
-      return { user: { email: email }, error: null };
-    } else {
-      return { user: null, error: 'Please enter a valid email and password.' };
+    try {
+      const { data, error } = await supabaseClient.auth.signInWithPassword({
+        email: email,
+        password: password
+      });
+
+      if (error) throw error;
+      return { user: data.user, error: null };
+    } catch (error) {
+      return { user: null, error: error.message };
     }
   },
 
   async logout() {
-    if (supabaseClient && !isPlaceholderConfig) {
+    if (supabaseClient) {
       try {
         await supabaseClient.auth.signOut();
       } catch (e) {
-        console.warn('Signout error:', e);
+        console.warn('Signout error:', e.message);
       }
     }
-    localStorage.removeItem('SS_DEMO_LOGGED_IN');
     return { error: null };
   }
 };
