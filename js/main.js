@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    const phone = WHATSAPP_PHONE || '919876543210';
+    const phone = getWhatsAppPhone();
 
     productsGrid.innerHTML = filtered.map(product => {
       const priceFormatted = formatINR(product.price);
@@ -175,15 +175,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // Helper to get sanitized active WhatsApp Phone Number
+  function getWhatsAppPhone() {
+    const rawPhone = localStorage.getItem('SS_WHATSAPP_PHONE') || (typeof WHATSAPP_PHONE !== 'undefined' ? WHATSAPP_PHONE : '919876543210');
+    return rawPhone.replace(/[^0-9]/g, '');
+  }
+
   // Footer / Hero custom order quick link handler
   const footerWhatsapp = document.getElementById('footer-whatsapp');
   const heroCustomOrder = document.getElementById('hero-custom-order');
-  const phone = WHATSAPP_PHONE || '919876543210';
+  const phone = getWhatsAppPhone();
   const generalMsg = encodeURIComponent("Hi Surprise and Stories! I'd like to inquire about a custom gift hamper.");
 
   if (footerWhatsapp) {
     footerWhatsapp.href = `https://wa.me/${phone}?text=${generalMsg}`;
     footerWhatsapp.target = '_blank';
+  }
+
+  if (heroCustomOrder) {
+    heroCustomOrder.href = `https://wa.me/${phone}?text=${generalMsg}`;
+    heroCustomOrder.target = '_blank';
   }
 
   // Initialize gallery

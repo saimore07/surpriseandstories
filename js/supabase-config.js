@@ -17,7 +17,7 @@ function sanitizeSupabaseUrl(rawUrl) {
 const RAW_SUPABASE_URL = localStorage.getItem('SS_SUPABASE_URL') || 'https://supabase.com/dashboard/project/pflduczzlxpuxianmevd.supabase.co';
 const SUPABASE_URL = sanitizeSupabaseUrl(RAW_SUPABASE_URL);
 const SUPABASE_ANON_KEY = (localStorage.getItem('SS_SUPABASE_ANON_KEY') || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBmbGR1Y3p6bHhwdXhpYW5tZXZkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3NzI1ODUsImV4cCI6MjEwMTM0ODU4NX0.rH8TNnzG11kc9uxpl59VCyTeaPDxHH10DpK-bTW_JHo').trim();
-const WHATSAPP_PHONE = localStorage.getItem('SS_WHATSAPP_PHONE') || '919876543210';
+const WHATSAPP_PHONE = localStorage.getItem('SS_WHATSAPP_PHONE') || '9156578252';
 
 // Check if using default placeholder configuration
 const isPlaceholderConfig = (
@@ -141,7 +141,7 @@ const DBService = {
 
     // Merge Supabase products and local products (avoiding duplicates by id or title)
     const productMap = new Map();
-    
+
     // Add local products first
     localProducts.forEach(p => {
       if (p && p.title) productMap.set(p.id || p.title, p);
