@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Surprise and Stories | Handcrafted Gifts & Bespoke Hampers</title>
+  <meta name="description" content="Handcrafted gifts, personalized cards, bespoke gift hampers, and custom memory boxes created to make your special moments unforgettable.">
+  
+  <!-- Google Fonts & Font Awesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Global Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- Supabase JS v2 CDN Script Tag -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <header class="navbar" id="navbar">
+    <div class="container nav-container">
+      <a href="index.html" class="logo">
+        <i class="fa-solid fa-gift"></i>
+        <span>Surprise and Stories</span>
+      </a>
+
+      <nav>
+        <ul class="nav-links" id="nav-links">
+          <li><a href="#home" class="nav-link active">Home</a></li>
+          <li><a href="#about" class="nav-link">About Us</a></li>
+          <li><a href="#gallery" class="nav-link">Gallery</a></li>
+          <li><a href="#services" class="nav-link">Services</a></li>
+          <li>
+            <a href="admin.html" class="btn btn-secondary btn-sm">
+              <i class="fa-solid fa-user-gear"></i> Admin Login
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <button class="mobile-toggle" id="mobile-toggle" aria-label="Toggle menu">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero" id="home">
+    <div class="container">
+      <div class="hero-grid">
+        <div class="hero-content">
+          <div class="hero-badge">
+            <i class="fa-solid fa-sparkles"></i> Crafted With Love & Passion
+          </div>
+          <h1 class="hero-title">
+            Handcrafted Gifts, <span>Unforgettable</span> Stories.
+          </h1>
+          <p class="hero-subtitle">
+            Celebrate every emotion with bespoke gift hampers, hand-painted photo boxes, and personalized keepsakes lovingly crafted for your favorite people.
+          </p>
+          <div class="hero-actions">
+            <a href="#gallery" class="btn btn-primary">
+              <i class="fa-solid fa-bag-shopping"></i> Explore Products
+            </a>
+            <a href="#gallery" id="hero-custom-order" class="btn btn-outline">
+              <i class="fa-brands fa-whatsapp"></i> Order Custom Gift
+            </a>
+          </div>
+
+          <div class="hero-features">
+            <div class="hero-feature-item">
+              <div class="hero-feature-icon"><i class="fa-solid fa-heart"></i></div>
+              <div class="hero-feature-text">
+                <h5>100% Handmade</h5>
+                <p>Artisan Crafted</p>
+              </div>
+            </div>
+            <div class="hero-feature-item">
+              <div class="hero-feature-icon"><i class="fa-solid fa-ribbon"></i></div>
+              <div class="hero-feature-text">
+                <h5>Bespoke Wraps</h5>
+                <p>Custom Styling</p>
+              </div>
+            </div>
+            <div class="hero-feature-item">
+              <div class="hero-feature-icon"><i class="fa-solid fa-truck-fast"></i></div>
+              <div class="hero-feature-text">
+                <h5>Fast Delivery</h5>
+                <p>Pan-India Express</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Visual Hero Showcase Cards -->
+        <div class="hero-showcase">
+          <div class="floating-card card-1">
+            <i class="fa-solid fa-heart-pulse"></i>
+            <div>
+              <div class="floating-card-title">Bespoke Love Box</div>
+              <div class="floating-card-subtitle">4.9 ★ (180+ Reviews)</div>
+            </div>
+          </div>
+
+          <div class="hero-img-wrapper">
+            <img src="https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&q=80&w=800" alt="Surprise Gift Box">
+          </div>
+
+          <div class="floating-card card-2">
+            <i class="fa-solid fa-box-open"></i>
+            <div>
+              <div class="floating-card-title">Hand-painted Memories</div>
+              <div class="floating-card-subtitle">Customized for You</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Us Section -->
+  <section class="about" id="about">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-images">
+          <div class="about-img">
+            <img src="https://images.unsplash.com/photo-1513885535751-8b9238bd48?auto=format&fit=crop&q=80&w=600" alt="Crafting Gift">
+          </div>
+          <div class="about-img">
+            <img src="https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&q=80&w=600" alt="Handmade Cards">
+          </div>
+          <div class="about-experience-badge">
+            <span>5+</span>
+            <span>Years of Stories</span>
+          </div>
+        </div>
+
+        <div class="about-content">
+          <span class="section-tag">OUR STORY & PASSION</span>
+          <h2>Crafting Feelings into Tangible Keepsakes</h2>
+          <p>
+            At <strong>Surprise and Stories</strong>, we believe every gift tells a heartfelt story. What started as a small kitchen table passion project has grown into a beloved studio dedicated to creating personalized memories.
+          </p>
+          <p>
+            From wax-sealed love letters to intricately structured photo explosion boxes, we carefully curate every detail so your loved ones feel truly cherished.
+          </p>
+
+          <div class="story-highlights">
+            <div class="story-item">
+              <i class="fa-solid fa-wand-magic-sparkles"></i>
+              <div>
+                <h4>Custom Personalization</h4>
+                <p>Your photos, letters, and custom quotes incorporated seamlessly.</p>
+              </div>
+            </div>
+            <div class="story-item">
+              <i class="fa-solid fa-gem"></i>
+              <div>
+                <h4>Premium Materials</h4>
+                <p>Archival quality paper, natural wax seals, and velvet ribbons.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Product Gallery Section -->
+  <section class="gallery" id="gallery">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">CURATED COLLECTION</span>
+        <h2 class="section-title">Explore Our Handcrafted Creations</h2>
+        <p class="section-subtitle">Click on any item to order directly via WhatsApp with your customization requests.</p>
+      </div>
+
+      <div class="gallery-controls">
+        <!-- Category Filter Tabs -->
+        <div class="category-tabs" id="category-tabs">
+          <button class="tab-btn active" data-category="All">All Gifts</button>
+          <button class="tab-btn" data-category="Gift Hampers">Gift Hampers</button>
+          <button class="tab-btn" data-category="Personalized Cards">Personalized Cards</button>
+          <button class="tab-btn" data-category="Anniversary">Anniversary Boxes</button>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="search-box">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="search-input" placeholder="Search gifts...">
+        </div>
+      </div>
+
+      <!-- Dynamic Product Grid -->
+      <div class="products-grid" id="products-grid">
+        <div class="loading-spinner">
+          <i class="fa-solid fa-circle-notch"></i>
+          <p>Fetching beautiful handcrafted gifts...</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Custom Services Section -->
+  <section class="services" id="services">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">BESPOKE SERVICES</span>
+        <h2 class="section-title">Tailored For Every Occasion</h2>
+        <p class="section-subtitle">We design custom gift solutions for birthdays, anniversaries, weddings, and corporate celebrations.</p>
+      </div>
+
+      <div class="services-grid">
+        <div class="service-card">
+          <div class="service-icon">
+            <i class="fa-solid fa-envelope-open-text"></i>
+          </div>
+          <h3>Personalized Cards</h3>
+          <p>Hand-calligraphed cards with pop-up elements, wax seals, and pressed botanicals.</p>
+        </div>
+
+        <div class="service-card">
+          <div class="service-icon">
+            <i class="fa-solid fa-box-archive"></i>
+          </div>
+          <h3>Gift Hampers</h3>
+          <p>Theme-based luxury hampers featuring chocolates, candles, frames, and skincare items.</p>
+        </div>
+
+        <div class="service-card">
+          <div class="service-icon">
+            <i class="fa-solid fa-cake-candles"></i>
+          </div>
+          <h3>Anniversary Boxes</h3>
+          <p>Interactive explosion boxes and memory trunks designed to celebrate milestone moments.</p>
+        </div>
+
+        <div class="service-card">
+          <div class="service-icon">
+            <i class="fa-solid fa-paper-plane"></i>
+          </div>
+          <h3>Express Delivery</h3>
+          <p>Safe & secure nationwide shipping with surprise timing options available.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer Section -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="logo">
+            <i class="fa-solid fa-gift"></i>
+            <span>Surprise and Stories</span>
+          </a>
+          <p>Creating unforgettable handcrafted gifts and bespoke hampers designed to spark joy and express true love.</p>
+          <div class="social-links">
+            <a href="#" class="social-btn" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#" class="social-btn" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="#" class="social-btn" aria-label="Pinterest"><i class="fa-brands fa-pinterest-p"></i></a>
+            <a href="#" class="social-btn" id="footer-whatsapp" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <ul class="footer-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About Us</a></li>
+            <li><a href="#gallery">Product Gallery</a></li>
+            <li><a href="#services">Our Services</a></li>
+            <li><a href="admin.html">Admin Portal</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Categories</h4>
+          <ul class="footer-links">
+            <li><a href="#gallery">Bespoke Hampers</a></li>
+            <li><a href="#gallery">Explosion Boxes</a></li>
+            <li><a href="#gallery">Personalized Cards</a></li>
+            <li><a href="#gallery">Anniversary Gifts</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Get In Touch</h4>
+          <ul class="contact-info-list">
+            <li>
+              <i class="fa-solid fa-location-dot"></i>
+              <span>Studio #42, Rosewood Lane, Mumbai, Maharashtra</span>
+            </li>
+            <li>
+              <i class="fa-solid fa-envelope"></i>
+              <span>hello@surpriseandstories.com</span>
+            </li>
+            <li>
+              <i class="fa-solid fa-phone"></i>
+              <span>+91 98765 43210</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2026 Surprise and Stories. All Rights Reserved. Crafted with <i class="fa-solid fa-heart" style="color: var(--primary);"></i> for magical moments.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/supabase-config.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

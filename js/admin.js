@@ -1,0 +1,429 @@
+/* ----------------------------------------------------
+   Surprise and Stories - Admin Dashboard & Auth Logic
+   ---------------------------------------------------- */
+
+document.addEventListener('DOMContentLoaded', async () => {
+  // UI Elements
+  const loginView = document.getElementById('login-view');
+  const dashboardView = document.getElementById('dashboard-view');
+  const loginForm = document.getElementById('login-form');
+  const logoutBtn = document.getElementById('logout-btn');
+  const userEmailDisplay = document.getElementById('user-email-display');
+  const userAvatarInitial = document.getElementById('user-avatar-initial');
+  const userStatusText = document.getElementById('user-status-text');
+
+  // Stats Elements
+  const statTotalProducts = document.getElementById('stat-total-products');
+  const statTotalCategories = document.getElementById('stat-total-categories');
+  const statWhatsappPhone = document.getElementById('stat-whatsapp-phone');
+  const statSystemMode = document.getElementById('stat-system-mode');
+
+  // Inventory Table
+  const inventoryTableBody = document.getElementById('inventory-table-body');
+  const refreshInventoryBtn = document.getElementById('refresh-inventory-btn');
+
+  // Add Product Form & Dropzone
+  const addProductForm = document.getElementById('add-product-form');
+  const prodImageFileInput = document.getElementById('prod-image-file');
+  const imagePreviewWrapper = document.getElementById('image-preview-wrapper');
+  const imagePreview = document.getElementById('image-preview');
+  const removeImgBtn = document.getElementById('remove-img-btn');
+  const submitProductBtn = document.getElementById('submit-product-btn');
+  const dropzone = document.getElementById('dropzone');
+
+  // Settings Form
+  const settingsForm = document.getElementById('settings-form');
+  const configSupabaseUrl = document.getElementById('config-supabase-url');
+  const configSupabaseKey = document.getElementById('config-supabase-key');
+  const configWhatsappPhone = document.getElementById('config-whatsapp-phone');
+  const resetSettingsBtn = document.getElementById('reset-settings-btn');
+
+  // Active state variables
+  let currentFile = null;
+  let cachedProducts = [];
+
+  // 1. Auth Guard - Check initial session
+  async function checkAuthSession() {
+    const session = await AuthService.getSession();
+    if (session && session.user) {
+      showDashboard(session.user);
+    } else {
+      showLogin();
+    }
+  }
+
+  function showLogin() {
+    loginView.style.display = 'flex';
+    dashboardView.style.display = 'none';
+  }
+
+  function showDashboard(user) {
+    loginView.style.display = 'none';
+    dashboardView.style.display = 'block';
+
+    const email = user.email || 'admin@surpriseandstories.com';
+    if (userEmailDisplay) userEmailDisplay.textContent = email;
+    if (userAvatarInitial) userAvatarInitial.textContent = email.charAt(0).toUpperCase();
+
+    // Set connection mode status
+    if (statSystemMode) {
+      if (isPlaceholderConfig) {
+        statSystemMode.innerHTML = '<span style="color: #F59E0B;"><i class="fa-solid fa-flask"></i> Demo Mode</span>';
+        if (userStatusText) userStatusText.textContent = 'Demo Administrator';
+      } else {
+        statSystemMode.innerHTML = '<span style="color: #10B981;"><i class="fa-solid fa-circle-check"></i> Supabase Live</span>';
+        if (userStatusText) userStatusText.textContent = 'Supabase Administrator';
+      }
+    }
+
+    if (statWhatsappPhone) {
+      statWhatsappPhone.textContent = `+${WHATSAPP_PHONE}`;
+    }
+
+    loadInventory();
+    initSettingsFormValues();
+  }
+
+  // Login Submit Handler
+  if (loginForm) {
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+      const loginBtn = document.getElementById('login-btn');
+
+      loginBtn.disabled = true;
+      loginBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Signing In...';
+
+      const { user, error } = await AuthService.login(email, password);
+
+      loginBtn.disabled = false;
+      loginBtn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Sign In to Dashboard';
+
+      if (error) {
+        showToast(error, 'error');
+      } else {
+        showToast('Logged in successfully!', 'success');
+        showDashboard(user);
+      }
+    });
+  }
+
+  // Demo Mode Instant Login Button
+  const demoLoginBtn = document.getElementById('demo-login-btn');
+  if (demoLoginBtn) {
+    demoLoginBtn.addEventListener('click', async () => {
+      const email = document.getElementById('login-email').value || 'admin@surpriseandstories.com';
+      const password = document.getElementById('login-password').value || 'admin123';
+      const { user } = await AuthService.login(email, password, true);
+      showToast('Signed in via Demo Mode!', 'success');
+      showDashboard(user);
+    });
+  }
+
+  // Logout Handler
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', async () => {
+      await AuthService.logout();
+      showToast('Logged out of admin portal.', 'info');
+      showLogin();
+    });
+  }
+
+  // 2. Tab Navigation Handler
+  const tabBtns = document.querySelectorAll('.admin-tab-btn');
+  const tabPanes = document.querySelectorAll('.tab-pane');
+
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetTab = btn.getAttribute('data-tab');
+
+      tabBtns.forEach(b => b.classList.remove('active'));
+      tabPanes.forEach(pane => pane.style.display = 'none');
+
+      btn.classList.add('active');
+      const activePane = document.getElementById(targetTab);
+      if (activePane) activePane.style.display = 'block';
+    });
+  });
+
+  // 3. File Dropzone & Image Handling
+  if (prodImageFileInput) {
+    prodImageFileInput.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files[0]) {
+        handleFileSelect(e.target.files[0]);
+      }
+    });
+  }
+
+  if (dropzone) {
+    ['dragenter', 'dragover'].forEach(eventName => {
+      dropzone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        dropzone.classList.add('dragover');
+      }, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+      dropzone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        dropzone.classList.remove('dragover');
+      }, false);
+    });
+
+    dropzone.addEventListener('drop', (e) => {
+      const dt = e.dataTransfer;
+      const files = dt.files;
+      if (files && files[0]) {
+        handleFileSelect(files[0]);
+      }
+    });
+  }
+
+  function handleFileSelect(file) {
+    if (!file.type.startsWith('image/')) {
+      showToast('Please select a valid image file (JPG, PNG, WEBP).', 'error');
+      return;
+    }
+
+    currentFile = file;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      imagePreview.src = e.target.result;
+      imagePreviewWrapper.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  if (removeImgBtn) {
+    removeImgBtn.addEventListener('click', () => {
+      currentFile = null;
+      prodImageFileInput.value = '';
+      imagePreview.src = '';
+      imagePreviewWrapper.style.display = 'none';
+    });
+  }
+
+  // 4. Add Product Form Submit Handler
+  if (addProductForm) {
+    addProductForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const title = document.getElementById('prod-title').value.trim();
+      const price = document.getElementById('prod-price').value.trim();
+      const category = document.getElementById('prod-category').value;
+      const description = document.getElementById('prod-desc').value.trim();
+
+      if (!currentFile) {
+        showToast('Please upload a product image photo.', 'error');
+        return;
+      }
+
+      submitProductBtn.disabled = true;
+      submitProductBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Uploading Image & Saving...';
+
+      try {
+        // Step 1: Upload image file to Supabase Storage bucket `product-images`
+        const { url: imageUrl, error: uploadErr } = await DBService.uploadImage(currentFile);
+
+        if (uploadErr) {
+          throw new Error('Image upload failed: ' + uploadErr);
+        }
+
+        // Step 2: Insert product row into Supabase `products` table
+        const { data: newProd, error: dbErr } = await DBService.addProduct({
+          title: title,
+          price: price,
+          category: category,
+          description: description,
+          image_url: imageUrl
+        });
+
+        if (dbErr) {
+          throw new Error('Database insert failed: ' + dbErr.message);
+        }
+
+        showToast(`Product "${title}" added successfully!`, 'success');
+
+        // Reset form state
+        addProductForm.reset();
+        currentFile = null;
+        imagePreview.src = '';
+        imagePreviewWrapper.style.display = 'none';
+
+        // Switch back to Inventory Tab & Refresh
+        const inventoryTabBtn = document.querySelector('[data-tab="tab-inventory"]');
+        if (inventoryTabBtn) inventoryTabBtn.click();
+        loadInventory();
+
+      } catch (err) {
+        showToast(err.message || 'Error adding product.', 'error');
+      } finally {
+        submitProductBtn.disabled = false;
+        submitProductBtn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Upload Product to Store';
+      }
+    });
+  }
+
+  // 5. Load & Render Inventory Table
+  async function loadInventory() {
+    if (!inventoryTableBody) return;
+
+    inventoryTableBody.innerHTML = `
+      <tr>
+        <td colspan="6" class="text-center" style="padding: 3rem 0;">
+          <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 1.8rem; color: var(--primary);"></i>
+          <p style="margin-top: 0.5rem; color: var(--text-muted);">Fetching products from database...</p>
+        </td>
+      </tr>
+    `;
+
+    const { data, error } = await DBService.getProducts();
+
+    if (error) {
+      inventoryTableBody.innerHTML = `
+        <tr>
+          <td colspan="6" class="text-center text-danger" style="padding: 2rem 0;">
+            <i class="fa-solid fa-circle-exclamation"></i> Error loading products: ${error.message}
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    cachedProducts = data || [];
+
+    // Update Stats
+    if (statTotalProducts) statTotalProducts.textContent = cachedProducts.length;
+
+    const categories = new Set(cachedProducts.map(p => p.category || 'General'));
+    if (statTotalCategories) statTotalCategories.textContent = categories.size;
+
+    if (cachedProducts.length === 0) {
+      inventoryTableBody.innerHTML = `
+        <tr>
+          <td colspan="6" class="text-center" style="padding: 3rem 0; color: var(--text-muted);">
+            <i class="fa-solid fa-box-open" style="font-size: 2rem; margin-bottom: 0.5rem;"></i>
+            <p>No products in inventory yet. Click "Add New Product" to create one.</p>
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    const formatINR = (val) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(val);
+
+    inventoryTableBody.innerHTML = cachedProducts.map(prod => {
+      const dateStr = prod.created_at ? new Date(prod.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Recently';
+      const img = prod.image_url || 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&q=80&w=800';
+
+      return `
+        <tr data-id="${prod.id}">
+          <td>
+            <img src="${img}" alt="${prod.title}" class="table-img" onerror="this.src='https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&q=80&w=800'">
+          </td>
+          <td>
+            <strong>${prod.title}</strong>
+            <div style="font-size: 0.78rem; color: var(--text-muted); max-width: 280px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+              ${prod.description || ''}
+            </div>
+          </td>
+          <td>
+            <span class="badge badge-primary">${prod.category || 'Gift Hampers'}</span>
+          </td>
+          <td style="font-weight: 700; color: var(--primary);">
+            ${formatINR(prod.price)}
+          </td>
+          <td style="font-size: 0.82rem; color: var(--text-muted);">
+            ${dateStr}
+          </td>
+          <td class="text-right">
+            <button class="btn btn-danger btn-delete-product" data-id="${prod.id}" data-title="${prod.title}">
+              <i class="fa-solid fa-trash-can"></i> Delete
+            </button>
+          </td>
+        </tr>
+      `;
+    }).join('');
+
+    // Attach Delete Event Listeners
+    inventoryTableBody.querySelectorAll('.btn-delete-product').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = btn.getAttribute('data-id');
+        const title = btn.getAttribute('data-title');
+
+        if (confirm(`Are you sure you want to delete "${title}" from inventory?`)) {
+          btn.disabled = true;
+          btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+
+          const { error } = await DBService.deleteProduct(id);
+
+          if (error) {
+            showToast('Failed to delete product: ' + error.message, 'error');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-trash-can"></i> Delete';
+          } else {
+            showToast(`Product "${title}" deleted.`, 'info');
+            loadInventory();
+          }
+        }
+      });
+    });
+  }
+
+  if (refreshInventoryBtn) {
+    refreshInventoryBtn.addEventListener('click', () => {
+      loadInventory();
+      showToast('Inventory reloaded.', 'info');
+    });
+  }
+
+  // 6. Settings Form Initialization & Handler
+  function initSettingsFormValues() {
+    if (configSupabaseUrl) configSupabaseUrl.value = localStorage.getItem('SS_SUPABASE_URL') || '';
+    if (configSupabaseKey) configSupabaseKey.value = localStorage.getItem('SS_SUPABASE_ANON_KEY') || '';
+    if (configWhatsappPhone) configWhatsappPhone.value = WHATSAPP_PHONE;
+  }
+
+  if (settingsForm) {
+    settingsForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const rawUrl = configSupabaseUrl.value.trim();
+      const url = sanitizeSupabaseUrl(rawUrl);
+      const key = configSupabaseKey.value.trim();
+      const phone = configWhatsappPhone.value.trim().replace(/[^0-9]/g, '');
+
+      if (url) localStorage.setItem('SS_SUPABASE_URL', url);
+      else localStorage.removeItem('SS_SUPABASE_URL');
+
+      if (key) localStorage.setItem('SS_SUPABASE_ANON_KEY', key);
+      else localStorage.removeItem('SS_SUPABASE_ANON_KEY');
+
+      if (phone) localStorage.setItem('SS_WHATSAPP_PHONE', phone);
+
+      showToast('Settings saved successfully! Reloading configuration...', 'success');
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 1200);
+    });
+  }
+
+  if (resetSettingsBtn) {
+    resetSettingsBtn.addEventListener('click', () => {
+      if (confirm('Reset all Supabase & WhatsApp settings back to defaults?')) {
+        localStorage.removeItem('SS_SUPABASE_URL');
+        localStorage.removeItem('SS_SUPABASE_ANON_KEY');
+        localStorage.removeItem('SS_WHATSAPP_PHONE');
+        showToast('Settings reset to default.', 'info');
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      }
+    });
+  }
+
+  // Initial Auth Check
+  checkAuthSession();
+});

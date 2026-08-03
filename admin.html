@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | Surprise and Stories</title>
+  <meta name="robots" content="noindex, nofollow">
+  
+  <!-- Google Fonts & Font Awesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Global Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- Supabase JS v2 CDN Script Tag -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="admin-body">
+
+  <!-- View 1: Auth Guard / Login View -->
+  <div id="login-view" class="auth-wrapper">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <i class="fa-solid fa-gift"></i>
+      </div>
+      <h2 class="font-serif" style="margin-bottom: 0.2rem;">Admin Portal</h2>
+      <p class="auth-subtitle">Sign in to manage inventory & products</p>
+
+      <form id="login-form">
+        <div class="form-group">
+          <label for="login-email">Email Address</label>
+          <input type="email" id="login-email" class="form-control" placeholder="admin@surpriseandstories.com" required>
+        </div>
+
+        <div class="form-group">
+          <label for="login-password">Password</label>
+          <input type="password" id="login-password" class="form-control" placeholder="••••••••" required>
+        </div>
+
+        <button type="submit" id="login-btn" class="btn btn-primary" style="width: 100%;">
+          <i class="fa-solid fa-right-to-bracket"></i> Sign In to Dashboard
+        </button>
+      </form>
+
+      <div class="demo-hint">
+        <i class="fa-solid fa-lightbulb"></i> <strong>Sign In Options:</strong> Enter your registered Supabase User credentials, or click below to enter Demo Mode instantly.
+        <div style="margin-top: 0.8rem;">
+          <button type="button" id="demo-login-btn" class="btn btn-secondary btn-sm" style="width: 100%;">
+            <i class="fa-solid fa-flask"></i> Sign In via Demo Mode
+          </button>
+        </div>
+      </div>
+
+      <div style="margin-top: 1.5rem;">
+        <a href="index.html" class="btn btn-outline btn-sm">
+          <i class="fa-solid fa-arrow-left"></i> Back to Public Store
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- View 2: Main Client Admin Dashboard (Revealed after login) -->
+  <div id="dashboard-view" style="display: none;">
+    <!-- Admin Top Navbar -->
+    <header class="admin-navbar">
+      <div class="container admin-nav-container">
+        <a href="index.html" class="logo">
+          <i class="fa-solid fa-gift"></i>
+          <span>Surprise and Stories</span>
+        </a>
+
+        <div class="user-badge">
+          <div class="user-avatar" id="user-avatar-initial">A</div>
+          <div>
+            <div style="font-size: 0.85rem; font-weight: 600;" id="user-email-display">admin@surpriseandstories.com</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);" id="user-status-text">Administrator</div>
+          </div>
+          <button id="logout-btn" class="btn btn-secondary btn-sm" style="margin-left: 1rem;">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Dashboard Body -->
+    <main class="container admin-main">
+      <div class="admin-header">
+        <div>
+          <h1 class="admin-title font-serif">Product & Inventory Management</h1>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">Upload new handcrafted creations and manage your active WhatsApp catalog.</p>
+        </div>
+
+        <!-- Dashboard Navigation Tabs -->
+        <div class="admin-tabs">
+          <button class="admin-tab-btn active" data-tab="tab-inventory">
+            <i class="fa-solid fa-boxes-stacked"></i> Live Inventory
+          </button>
+          <button class="admin-tab-btn" data-tab="tab-add-product">
+            <i class="fa-solid fa-plus"></i> Add New Product
+          </button>
+          <button class="admin-tab-btn" data-tab="tab-settings">
+            <i class="fa-solid fa-sliders"></i> Supabase Settings
+          </button>
+        </div>
+      </div>
+
+      <!-- Stats Overview Cards -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fa-solid fa-bag-shopping"></i></div>
+          <div>
+            <div class="stat-number" id="stat-total-products">0</div>
+            <div class="stat-label">Total Active Products</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fa-solid fa-layer-group"></i></div>
+          <div>
+            <div class="stat-number" id="stat-total-categories">0</div>
+            <div class="stat-label">Product Categories</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fa-brands fa-whatsapp" style="color: #25D366;"></i></div>
+          <div>
+            <div class="stat-number" id="stat-whatsapp-phone">+91 98765 43210</div>
+            <div class="stat-label">Active WhatsApp Number</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fa-solid fa-database"></i></div>
+          <div>
+            <div class="stat-number" id="stat-system-mode" style="font-size: 1.1rem; color: var(--primary);">Live / Demo</div>
+            <div class="stat-label">Supabase Connection</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab Content 1: Live Inventory Management Table -->
+      <div id="tab-inventory" class="tab-pane">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <h2 class="admin-card-title font-serif">Current Product Inventory</h2>
+            <div>
+              <button id="refresh-inventory-btn" class="btn btn-secondary btn-sm">
+                <i class="fa-solid fa-arrows-rotate"></i> Refresh
+              </button>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="inventory-table">
+              <thead>
+                <tr>
+                  <th>Image</th>
+                  <th>Product Title</th>
+                  <th>Category</th>
+                  <th>Price (₹)</th>
+                  <th>Date Added</th>
+                  <th class="text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody id="inventory-table-body">
+                <tr>
+                  <td colspan="6" class="text-center" style="padding: 3rem 0;">
+                    <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 1.8rem; color: var(--primary);"></i>
+                    <p style="margin-top: 0.5rem; color: var(--text-muted);">Loading inventory...</p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab Content 2: Add New Product Form -->
+      <div id="tab-add-product" class="tab-pane" style="display: none;">
+        <div class="admin-card" style="max-width: 760px; margin: 0 auto;">
+          <div class="admin-card-header">
+            <h2 class="admin-card-title font-serif">Add New Handcrafted Product</h2>
+          </div>
+
+          <form id="add-product-form">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem;">
+              <div class="form-group">
+                <label for="prod-title">Product Title *</label>
+                <input type="text" id="prod-title" class="form-control" placeholder="e.g. Velvet Memory Hamper" required>
+              </div>
+
+              <div class="form-group">
+                <label for="prod-price">Price in ₹ (INR) *</label>
+                <input type="number" id="prod-price" class="form-control" placeholder="1999" min="0" step="1" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="prod-category">Product Category *</label>
+              <select id="prod-category" class="form-control" required>
+                <option value="Gift Hampers">Gift Hampers</option>
+                <option value="Personalized Cards">Personalized Cards</option>
+                <option value="Anniversary">Anniversary Boxes</option>
+                <option value="Custom Gifts">Custom Gifts</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="prod-desc">Product Description *</label>
+              <textarea id="prod-desc" class="form-control" rows="4" placeholder="Describe the materials, handmade craftsmanship, fairy lights, chocolates, custom note features..." required></textarea>
+            </div>
+
+            <!-- Product Image Upload / File Dropzone -->
+            <div class="form-group">
+              <label>Product Image *</label>
+              <div class="file-dropzone" id="dropzone">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                <h4>Click or drag & drop product photo</h4>
+                <p>Supports PNG, JPG, WEBP formats (Max 5MB)</p>
+                <input type="file" id="prod-image-file" accept="image/*">
+              </div>
+
+              <!-- Image Preview Container -->
+              <div id="image-preview-wrapper" style="display: none; margin-top: 1rem;">
+                <div class="image-preview-container">
+                  <img id="image-preview" class="image-preview" src="" alt="Preview">
+                  <button type="button" id="remove-img-btn" class="btn btn-danger btn-sm" style="position: absolute; top: -10px; right: -10px; border-radius: 50%; width: 26px; height: 26px; padding: 0; display: flex; align-items: center; justify-content: center;">
+                    <i class="fa-solid fa-xmark"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div style="margin-top: 0.8rem; font-size: 0.8rem; color: var(--text-muted);">
+                <i class="fa-solid fa-info-circle"></i> Images will be uploaded to Supabase Storage bucket <code>product-images</code>.
+              </div>
+            </div>
+
+            <div style="margin-top: 2rem;">
+              <button type="submit" id="submit-product-btn" class="btn btn-primary" style="width: 100%;">
+                <i class="fa-solid fa-cloud-arrow-up"></i> Upload Product to Store
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Tab Content 3: Supabase & WhatsApp Config -->
+      <div id="tab-settings" class="tab-pane" style="display: none;">
+        <div class="admin-card" style="max-width: 760px; margin: 0 auto;">
+          <div class="admin-card-header">
+            <h2 class="admin-card-title font-serif">Supabase & Store Configuration</h2>
+          </div>
+
+          <div class="config-box">
+            <p><i class="fa-solid fa-shield-halved"></i> <strong>Live Supabase Connection:</strong> Enter your Supabase Project URL and Anon Public Key below to connect your live Supabase PostgreSQL database and Storage bucket.</p>
+          </div>
+
+          <form id="settings-form">
+            <div class="form-group">
+              <label for="config-supabase-url">Supabase Project URL</label>
+              <input type="url" id="config-supabase-url" class="form-control" placeholder="https://xyzcompany.supabase.co">
+            </div>
+
+            <div class="form-group">
+              <label for="config-supabase-key">Supabase Anon Public Key</label>
+              <input type="password" id="config-supabase-key" class="form-control" placeholder="eyJhYmdj... (Anon Public Key)">
+            </div>
+
+            <div class="form-group">
+              <label for="config-whatsapp-phone">WhatsApp Business Phone Number (for Customer Orders)</label>
+              <input type="text" id="config-whatsapp-phone" class="form-control" placeholder="919876543210" required>
+              <small style="color: var(--text-muted);">Include country code without '+' or spaces (e.g., 919876543210 for India).</small>
+            </div>
+
+            <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+              <button type="submit" class="btn btn-primary">
+                <i class="fa-solid fa-floppy-disk"></i> Save Settings
+              </button>
+              <button type="button" id="reset-settings-btn" class="btn btn-secondary">
+                <i class="fa-solid fa-rotate-left"></i> Reset to Default Demo
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/supabase-config.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>
