@@ -82,6 +82,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     loadInventory();
     initSettingsFormValues();
+    initAboutImagesAdmin();
   }
 
   // Login Submit Handler
@@ -420,6 +421,76 @@ document.addEventListener('DOMContentLoaded', async () => {
         setTimeout(() => {
           window.location.reload();
         }, 1000);
+      }
+    });
+  }
+
+  // 7. About Us Images Handler
+  const aboutImagesForm = document.getElementById('about-images-form');
+  const aboutFile1 = document.getElementById('about-file-1');
+  const aboutFile2 = document.getElementById('about-file-2');
+  const aboutPreview1 = document.getElementById('about-preview-1');
+  const aboutPreview2 = document.getElementById('about-preview-2');
+  const saveAboutImgsBtn = document.getElementById('save-about-imgs-btn');
+
+  function initAboutImagesAdmin() {
+    if (aboutPreview1 || aboutPreview2) {
+      const { img1, img2 } = DBService.getAboutImages();
+      if (aboutPreview1 && img1) aboutPreview1.src = img1;
+      if (aboutPreview2 && img2) aboutPreview2.src = img2;
+    }
+  }
+
+  if (aboutFile1) {
+    aboutFile1.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files[0]) {
+        const reader = new FileReader();
+        reader.onload = (evt) => { if (aboutPreview1) aboutPreview1.src = evt.target.result; };
+        reader.readAsDataURL(e.target.files[0]);
+      }
+    });
+  }
+
+  if (aboutFile2) {
+    aboutFile2.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files[0]) {
+        const reader = new FileReader();
+        reader.onload = (evt) => { if (aboutPreview2) aboutPreview2.src = evt.target.result; };
+        reader.readAsDataURL(e.target.files[0]);
+      }
+    });
+  }
+
+  if (aboutImagesForm) {
+    aboutImagesForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const file1 = aboutFile1 && aboutFile1.files ? aboutFile1.files[0] : null;
+      const file2 = aboutFile2 && aboutFile2.files ? aboutFile2.files[0] : null;
+
+      if (!file1 && !file2) {
+        showToast('Please select at least 1 image file to upload.', 'info');
+        return;
+      }
+
+      saveAboutImgsBtn.disabled = true;
+      saveAboutImgsBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Uploading to aboutus-images bucket...';
+
+      try {
+        if (file1) {
+          await DBService.uploadAboutImage(file1, 1);
+        }
+        if (file2) {
+          await DBService.uploadAboutImage(file2, 2);
+        }
+
+        showToast('About Us photos updated successfully!', 'success');
+        initAboutImagesAdmin();
+      } catch (err) {
+        showToast(err.message || 'Failed to upload About Us photos.', 'error');
+      } finally {
+        saveAboutImgsBtn.disabled = false;
+        saveAboutImgsBtn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Upload & Save About Us Photos';
       }
     });
   }

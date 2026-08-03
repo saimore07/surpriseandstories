@@ -197,6 +197,18 @@ document.addEventListener('DOMContentLoaded', () => {
     heroCustomOrder.target = '_blank';
   }
 
-  // Initialize gallery
+  // Load About Us Images dynamically
+  function loadAboutImages() {
+    const img1Elem = document.getElementById('about-img-1');
+    const img2Elem = document.getElementById('about-img-2');
+    if (img1Elem || img2Elem) {
+      const { img1, img2 } = DBService.getAboutImages();
+      if (img1Elem && img1) img1Elem.src = img1;
+      if (img2Elem && img2) img2Elem.src = img2;
+    }
+  }
+
+  // Initialize gallery and about us images
+  loadAboutImages();
   loadProducts();
 });

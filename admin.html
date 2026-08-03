@@ -101,6 +101,9 @@
           <button class="admin-tab-btn" data-tab="tab-add-product">
             <i class="fa-solid fa-plus"></i> Add New Product
           </button>
+          <button class="admin-tab-btn" data-tab="tab-about-images">
+            <i class="fa-solid fa-images"></i> About Us Photos
+          </button>
           <button class="admin-tab-btn" data-tab="tab-settings">
             <i class="fa-solid fa-sliders"></i> Supabase Settings
           </button>
@@ -282,6 +285,46 @@
               </button>
               <button type="button" id="reset-settings-btn" class="btn btn-secondary">
                 <i class="fa-solid fa-rotate-left"></i> Reset to Default Demo
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Tab Content 4: Manage About Us Images -->
+      <div id="tab-about-images" class="tab-pane" style="display: none;">
+        <div class="admin-card" style="max-width: 760px; margin: 0 auto;">
+          <div class="admin-card-header">
+            <h2 class="admin-card-title font-serif">Manage About Us Showcase Photos</h2>
+          </div>
+          <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 1.5rem;">
+            Upload up to <strong>2 showcase photos</strong> for the <strong>About Us</strong> section on the public landing page. Images will be stored in your Supabase Storage bucket <code>aboutus-images</code>.
+          </p>
+
+          <form id="about-images-form">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;" id="about-img-grid">
+              <!-- About Image 1 -->
+              <div class="form-group" style="text-align: center;">
+                <label style="font-size: 0.9rem; font-weight: 600; margin-bottom: 0.6rem;">About Us Photo 1</label>
+                <div style="margin-bottom: 0.8rem;">
+                  <img id="about-preview-1" src="https://images.unsplash.com/photo-1513885535751-8b9238bd48?auto=format&fit=crop&q=80&w=600" style="width: 100%; height: 180px; object-fit: cover; border-radius: var(--border-radius-sm); border: 2px solid var(--border-color);">
+                </div>
+                <input type="file" id="about-file-1" accept="image/*" class="form-control" style="font-size: 0.8rem;">
+              </div>
+
+              <!-- About Image 2 -->
+              <div class="form-group" style="text-align: center;">
+                <label style="font-size: 0.9rem; font-weight: 600; margin-bottom: 0.6rem;">About Us Photo 2</label>
+                <div style="margin-bottom: 0.8rem;">
+                  <img id="about-preview-2" src="https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&q=80&w=600" style="width: 100%; height: 180px; object-fit: cover; border-radius: var(--border-radius-sm); border: 2px solid var(--border-color);">
+                </div>
+                <input type="file" id="about-file-2" accept="image/*" class="form-control" style="font-size: 0.8rem;">
+              </div>
+            </div>
+
+            <div style="margin-top: 1.5rem;">
+              <button type="submit" id="save-about-imgs-btn" class="btn btn-primary" style="width: 100%;">
+                <i class="fa-solid fa-cloud-arrow-up"></i> Upload & Save About Us Photos
               </button>
             </div>
           </form>

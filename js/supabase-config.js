@@ -269,6 +269,63 @@ const DBService = {
     }
 
     return { error: null };
+  },
+
+  // Get About Us Images (2 image limit)
+  getAboutImages() {
+    const img1 = localStorage.getItem('SS_ABOUT_IMAGE_1') || 'https://images.unsplash.com/photo-1513885535751-8b9238bd48?auto=format&fit=crop&q=80&w=600';
+    const img2 = localStorage.getItem('SS_ABOUT_IMAGE_2') || 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&q=80&w=600';
+    return { img1, img2 };
+  },
+
+  // Upload About Us Image to Supabase Storage bucket `aboutus-images`
+  async uploadAboutImage(file, index) {
+    if (!file) return { url: null, error: 'No file provided' };
+
+    const readAsDataURL = (fileObj) => {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (e) => resolve(e.target.result);
+        reader.onerror = () => resolve(index === 1 ? 'https://images.unsplash.com/photo-1513885535751-8b9238bd48?auto=format&fit=crop&q=80&w=600' : 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&q=80&w=600');
+        reader.readAsDataURL(fileObj);
+      });
+    };
+
+    const dataUrl = await readAsDataURL(file);
+    const ext = file.name.split('.').pop() || 'jpg';
+    const fileName = `about_${index}_${Date.now()}.${ext}`;
+
+    let finalUrl = dataUrl;
+
+    if (supabaseClient && !isPlaceholderConfig) {
+      try {
+        const { data, error } = await supabaseClient.storage
+          .from('aboutus-images')
+          .upload(fileName, file, { cacheControl: '3600', upsert: true });
+
+        if (!error && data) {
+          const { data: publicUrlData } = supabaseClient.storage
+            .from('aboutus-images')
+            .getPublicUrl(fileName);
+
+          if (publicUrlData && publicUrlData.publicUrl) {
+            try {
+              const res = await fetch(publicUrlData.publicUrl, { method: 'HEAD' });
+              if (res.ok) {
+                finalUrl = publicUrlData.publicUrl;
+              }
+            } catch (e) {
+              console.info('Supabase aboutus-images URL not public, using Data URL fallback.');
+            }
+          }
+        }
+      } catch (error) {
+        console.warn('Supabase aboutus-images upload warning:', error.message);
+      }
+    }
+
+    localStorage.setItem(`SS_ABOUT_IMAGE_${index}`, finalUrl);
+    return { url: finalUrl, error: null };
   }
 };
 
