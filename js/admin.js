@@ -495,6 +495,32 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
+  // Delete / Reset About Us Image Event Listeners
+  const deleteAbout1Btn = document.getElementById('delete-about-1-btn');
+  const deleteAbout2Btn = document.getElementById('delete-about-2-btn');
+
+  if (deleteAbout1Btn) {
+    deleteAbout1Btn.addEventListener('click', async () => {
+      if (confirm('Are you sure you want to delete / reset About Us Photo 1?')) {
+        await DBService.deleteAboutImage(1);
+        if (aboutFile1) aboutFile1.value = '';
+        initAboutImagesAdmin();
+        showToast('About Us Photo 1 reset to default.', 'info');
+      }
+    });
+  }
+
+  if (deleteAbout2Btn) {
+    deleteAbout2Btn.addEventListener('click', async () => {
+      if (confirm('Are you sure you want to delete / reset About Us Photo 2?')) {
+        await DBService.deleteAboutImage(2);
+        if (aboutFile2) aboutFile2.value = '';
+        initAboutImagesAdmin();
+        showToast('About Us Photo 2 reset to default.', 'info');
+      }
+    });
+  }
+
   // Initial Auth Check
   checkAuthSession();
 });

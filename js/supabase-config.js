@@ -326,6 +326,12 @@ const DBService = {
 
     localStorage.setItem(`SS_ABOUT_IMAGE_${index}`, finalUrl);
     return { url: finalUrl, error: null };
+  },
+
+  // Delete / Reset About Us Image back to default
+  async deleteAboutImage(index) {
+    localStorage.removeItem(`SS_ABOUT_IMAGE_${index}`);
+    return { error: null };
   }
 };
 
