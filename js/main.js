@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    const phone = getWhatsAppPhone();
+    const phone = '9156578252';
 
     productsGrid.innerHTML = filtered.map(product => {
       const priceFormatted = formatINR(product.price);
@@ -175,16 +175,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Helper to get sanitized active WhatsApp Phone Number
-  function getWhatsAppPhone() {
-    const rawPhone = typeof WHATSAPP_PHONE !== 'undefined' ? WHATSAPP_PHONE : '9156578252';
-    return rawPhone.replace(/[^0-9]/g, '');
-  }
-
-  // Footer / Hero custom order quick link handler
+  const phone = '9156578252';
   const footerWhatsapp = document.getElementById('footer-whatsapp');
   const heroCustomOrder = document.getElementById('hero-custom-order');
-  const phone = getWhatsAppPhone();
   const generalMsg = encodeURIComponent("Hi Surprise and Stories! I'd like to inquire about a custom gift hamper.");
 
   if (footerWhatsapp) {

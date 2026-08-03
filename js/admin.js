@@ -366,7 +366,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   function initSettingsFormValues() {
     if (configSupabaseUrl) configSupabaseUrl.value = SUPABASE_URL;
     if (configSupabaseKey) configSupabaseKey.value = SUPABASE_ANON_KEY;
-    if (configWhatsappPhone) configWhatsappPhone.value = WHATSAPP_PHONE;
   }
 
   if (settingsForm) {
