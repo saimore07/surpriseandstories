@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    const phone = '9156578252';
+    const phone = typeof WHATSAPP_PHONE !== 'undefined' ? WHATSAPP_PHONE : '918180907632';
 
     productsGrid.innerHTML = filtered.map(product => {
       const priceFormatted = formatINR(product.price);
@@ -175,7 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  const phone = '9156578252';
+  const phone = typeof WHATSAPP_PHONE !== 'undefined' ? WHATSAPP_PHONE : '918180907632';
   const footerWhatsapp = document.getElementById('footer-whatsapp');
   const heroCustomOrder = document.getElementById('hero-custom-order');
   const generalMsg = encodeURIComponent("Hi Surprise and Stories! I'd like to inquire about a custom gift hamper.");

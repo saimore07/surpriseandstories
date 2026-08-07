@@ -16,7 +16,7 @@ function sanitizeSupabaseUrl(rawUrl) {
 // Production Supabase Configuration
 const SUPABASE_URL = sanitizeSupabaseUrl('https://pflduczzlxpuxianmevd.supabase.co');
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBmbGR1Y3p6bHhwdXhpYW5tZXZkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3NzI1ODUsImV4cCI6MjEwMTM0ODU4NX0.rH8TNnzG11kc9uxpl59VCyTeaPDxHH10DpK-bTW_JHo';
-const WHATSAPP_PHONE = '9156578252';
+const WHATSAPP_PHONE = '918180907632';
 
 // Initialize Supabase Client
 let supabaseClient = null;
